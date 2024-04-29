@@ -1,0 +1,216 @@
+---
+title: "Final Project"
+format: html
+editor: visual
+---
+
+```{r}
+# Installing Leaflet
+
+install.packages("leaflet")
+
+install.packages("tidyverse")
+
+library(tidyverse)
+
+library(readxl)
+
+library("leaflet")
+
+
+```
+
+
+
+```{r}
+# Making a map
+
+
+#Basics
+
+my_map <- leaflet()
+
+my_map
+
+my_map |> addTiles()
+
+
+my_map <- leaflet() |> 
+  addTiles()
+
+my_map
+
+my_map |> addMarkers(lat = 43.038425762570476, lng = -87.93247503978054, popup = "Current Location!")
+```
+
+```{r}
+# Your Turn!!!
+
+# Time to make your own map and put a marker on your house!
+
+
+my_house <- leaflet() |>
+  addTiles() |> 
+  addMarkers(lat = 42.9376801508135, lng = -89.37613019228888)
+
+my_house
+```
+
+```{r}
+# Large data set demonstration
+
+ufo_data <- as_tibble(read_xlsx("./UFOs_coord.xlsx")) |>
+  na.omit()
+
+ufo_data$date <- as.Date(ufo_data$...9, origin = "1899-12-30")
+
+
+ufo_map <- leaflet() |>
+  addTiles() |>
+  addMarkers(data = ufo_data,
+             lng = ~lng,
+             lat = ~lat)
+
+ufo_map
+
+```
+
+```{r}
+# Using just wisconsin data points
+
+wisconsin_data <- ufo_data |>
+  filter(ufo_data$State == "WI")
+
+wisconsin_map <- leaflet() |>
+  addTiles() |>
+  addCircleMarkers(data = wisconsin_data,
+             lng = ~lng,
+             lat = ~lat,
+             popup = ~Summary,
+             color = ~City)
+
+wisconsin_map
+
+
+
+
+
+```
+
+```{r}
+# Midwest data
+
+midwest_data <- ufo_data |>
+  filter(ufo_data$State == "WI" |
+         ufo_data$State == "MN" |
+         ufo_data$State == "MI" |
+         ufo_data$State == "IA" |
+         ufo_data$State == "IL")
+
+         
+leaflet() |>
+  addTiles() |>
+  addCircleMarkers(data = midwest_data,
+             lng = ~lng,
+             lat = ~lat,
+             popup = ~Summary,
+             color = ~State)
+
+
+
+
+
+```
+
+```{r}
+# Filter by state color
+
+wi_data <- ufo_data |>
+  filter(ufo_data$State == "WI")
+
+mn_data <- ufo_data |>
+  filter(ufo_data$State == "MN")
+
+il_data <- ufo_data |>
+  filter(ufo_data$State == "IL")
+
+ia_data <- ufo_data |>
+  filter(ufo_data$State == "IA")
+
+mi_data <- ufo_data |>
+  filter(ufo_data$State == "MI")
+
+
+
+         
+midwest_map <- leaflet() |>
+  addTiles() |>
+  addCircleMarkers(data = wi_data,
+             lng = ~lng,
+             lat = ~lat,
+             popup = ~Summary,
+             color = "blue") |>
+   addCircleMarkers(data = mn_data,
+             lng = ~lng,
+             lat = ~lat,
+             popup = ~Summary,
+             color = "orange") |>
+   addCircleMarkers(data = il_data,
+             lng = ~lng,
+             lat = ~lat,
+             popup = ~Summary,
+             color = "green") |>
+   addCircleMarkers(data = ia_data,
+             lng = ~lng,
+             lat = ~lat,
+             popup = ~Summary,
+             color = "yellow") |>
+   addCircleMarkers(data = mi_data,
+             lng = ~lng,
+             lat = ~lat,
+             popup = ~Summary,
+             color = "red") 
+
+midwest_map
+```
+
+```{r}
+
+leaflet() |>
+  addTiles() |>
+  addCircleMarkers(data = wi_data,
+             lng = ~lng,
+             lat = ~lat,
+             popup = ~Summary,
+             color = "blue",
+             group = "Wisconsin") |>
+   addCircleMarkers(data = mn_data,
+             lng = ~lng,
+             lat = ~lat,
+             popup = ~Summary,
+             color = "orange",
+             group = "Minnesota") |>
+   addCircleMarkers(data = il_data,
+             lng = ~lng,
+             lat = ~lat,
+             popup = ~Summary,
+             color = "green",
+             group = "Illinois") |>
+   addCircleMarkers(data = ia_data,
+             lng = ~lng,
+             lat = ~lat,
+             popup = ~Summary,
+             color = "yellow",
+             group = "Iowa") |>
+   addCircleMarkers(data = mi_data,
+             lng = ~lng,
+             lat = ~lat,
+             popup = ~Summary,
+             color = "red",
+             group = "Michigan") |>
+  addLayersControl(overlayGroups=c("Iowa", "Illinois", "Michigan", "Minnesota", "Wisconsin"))
+
+as.Date(wi_data$`Date / Time`)
+
+```
+
